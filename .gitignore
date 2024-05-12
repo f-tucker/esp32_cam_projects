@@ -1,0 +1,24 @@
+
+# ESP-IDF build directory
+/build/
+
+# ESP-IDF configuration files
+/sdkconfig
+/sdkconfig.old
+
+
+# extra component files
+dependencies.lock
+managed_components
+
+# Python virtual environment
+venv/
+.env/
+env/
+
+
+# MacOS specific
+.DS_Store
+
+# VS Code Settings
+.vscode/
