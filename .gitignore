@@ -1,10 +1,10 @@
 
 # ESP-IDF build directory
-/build/
+build/
 
 # ESP-IDF configuration files
-/sdkconfig
-/sdkconfig.old
+sdkconfig
+sdkconfig.old
 
 
 # extra component files
