@@ -32,7 +32,8 @@
 #define TEST_ESP_OK(ret) assert(ret == ESP_OK)
 
 //#define ESP32_WROVER_DEV 1
-#define ESP32S3_WROOM_CAM 1
+// #define ESP32S3_WROOM_CAM 1
+#define ESP32CAM_AITHINKER 1
 
 #ifdef ESP32S3_WROOM_CAM
 // esp32s3 cam, psram set in octal mode 
@@ -73,6 +74,28 @@
 #define CAM_PIN_HREF 23
 #define CAM_PIN_PCLK 22
 #endif
+
+
+#ifdef ESP32CAM_AITHINKER
+// ESP32Cam (AiThinker)
+#define CAM_PIN_PWDN 32
+#define CAM_PIN_RESET -1 
+#define CAM_PIN_XCLK 0
+#define CAM_PIN_SIOD 26
+#define CAM_PIN_SIOC 27
+#define CAM_PIN_D7 35
+#define CAM_PIN_D6 34
+#define CAM_PIN_D5 39
+#define CAM_PIN_D4 36
+#define CAM_PIN_D3 21
+#define CAM_PIN_D2 19
+#define CAM_PIN_D1 18
+#define CAM_PIN_D0 5
+#define CAM_PIN_VSYNC 25
+#define CAM_PIN_HREF 23
+#define CAM_PIN_PCLK 22
+#endif
+
 
 #define UART_PORT_NUM UART_NUM_0
 #define BUF_SIZE (4096)
@@ -183,7 +206,7 @@ static esp_err_t init_camera(framesize_t frame_size, int jpeg_quality)
         .frame_size = frame_size,          // 1-12 for ov2640
 
         .jpeg_quality = jpeg_quality,      // 0-63, smaller num = better quality
-        .fb_count = 2,                     // 
+        .fb_count = 1,                     // 
         .grab_mode = CAMERA_GRAB_LATEST,   // CAMERA_GRAB_WHEN_EMPTY, CAMERA_GRAB_LATEST
         .fb_location = CAMERA_FB_IN_DRAM   // PSRAM or DRAM, psram needs enabling in menuconfig 
     };
