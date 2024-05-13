@@ -1,8 +1,12 @@
-'''
-    Quick Serial Stream Viewer for ESP32CAM's
+"""
 
-    - is slow, but convenient for testing ESP32 cam features
-    - couldnt find any other examples of this online
+    description: Quick Serial Stream Viewer for ESP32CAM's
+    usage:       stream_reader.py [-h] -p PORT [-b BAUD]      
+    date:        13/05/24
+    
+    Note:
+        - is slow, but convenient for testing ESP32 cam features
+        - couldnt find any other examples of this online
 
 
 serial data of form:
@@ -12,18 +16,18 @@ serial data of form:
 ->image data
 ->DELIM    
 
-'''
+"""
 import numpy as np
 import serial
 import cv2
 import re
+import argparse
+import sys
 
 
-# config options:
-SERIAL_PORT = '/dev/tty.wchusbserial51850041821'
+# defaults
 BAUD_RATE = 115200
 MAX_BUF_SIZE =  8192 * 16
-
 DELIM = b'\n12345678900STREAM00987654321\n'
 
 
@@ -107,34 +111,55 @@ def process_buffer(buf, im_count):
             # remove processed data from buf
             buf = buf[im_end + len(DELIM):]
         else:
+            #print(f'Incomplete image data. Expected: {im_len}, Available: {len(buf) - im_start}')
             break
     return buf, im_count
 
 
-def main():
+def run_viewer(serial_port, baud_rate):
+    """ main task with lots of error handling... """
     buf = b''
     im_count = 0
-    ser = serial.Serial(SERIAL_PORT, BAUD_RATE)
-
+    ser = None
+    
     try:
+        ser = serial.Serial(serial_port, baud_rate)
+        print(f'Connected to {serial_port} at {baud_rate} baud.')
+        
         while True:
             buf = read_serial_data(ser, buf)
             buf, im_count = process_buffer(buf, im_count)
-
+            
+    except serial.PortNotOpenError as e:
+        print(f'Port not open error: {e}')
+    except serial.SerialException as e:
+        print(f'Error opening serial port {serial_port}: {e}')
     except KeyboardInterrupt:
         print('Keyboard interupt')
     except OSError as e:
         print(f'Serial error: {e}')
     except BufferOverflowError as e:
-        print(f'Buffer overflow error {e}')
+        print(f'Buffer overflow error: {e}')
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f'Unexpected error: {e}')
     finally:
-        ser.close()
+        if ser and ser.is_open:
+            ser.close()
         print('Serial port closed')
-
     return 0
 
 
-if __name__ == "__main__":
-    main()
+def parse_args():
+    """ Parser for args if run from terminal """
+    # passing arguments, if run from terminal
+    parser = argparse.ArgumentParser(description='Quick ESP32_CAM Serial Stream Viewer')
+    parser.add_argument('-p','--port', type=str, required=True,
+                        help='Serial port to connect to. \n MacOS: Run ls /dev/tty.* ')
+    parser.add_argument('-b', '--baud', type=int, default=BAUD_RATE,
+                        help=f'Baud rate for serial communication. Default is {BAUD_RATE}.')
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    run_viewer(args.port, args.baud)

@@ -12,7 +12,7 @@
     description:  Transmit serial image stream from an esp32 cam
                   View stream by running ../../stream_reader.py 
 
-    date: 12/05/24
+    date: 13/05/24
 
 */
 
@@ -31,14 +31,14 @@
 
 #define TEST_ESP_OK(ret) assert(ret == ESP_OK)
 
-//#define ESP32_WROVER_DEV 1
+// #define ESP32_WROVER_DEV 1
 // #define ESP32S3_WROOM_CAM 1
 #define ESP32CAM_AITHINKER 1
 
 #ifdef ESP32S3_WROOM_CAM
-// esp32s3 cam, psram set in octal mode 
-#define CAM_PIN_PWDN -1  // power down is not used
-#define CAM_PIN_RESET -1 // software reset will be performed
+// ESP32S3 WROOM cam board (by freenove)
+#define CAM_PIN_PWDN -1  
+#define CAM_PIN_RESET -1 
 #define CAM_PIN_XCLK 15 
 #define CAM_PIN_SIOD 4
 #define CAM_PIN_SIOC 5 
@@ -56,7 +56,7 @@
 #endif
 
 #ifdef ESP32_WROVER_DEV
-// frame buf in DRAM
+// ESP32-WROVER-DEV v1.6
 #define CAM_PIN_PWDN -1
 #define CAM_PIN_RESET -1
 #define CAM_PIN_XCLK 21
@@ -74,7 +74,6 @@
 #define CAM_PIN_HREF 23
 #define CAM_PIN_PCLK 22
 #endif
-
 
 #ifdef ESP32CAM_AITHINKER
 // ESP32Cam (AiThinker)
